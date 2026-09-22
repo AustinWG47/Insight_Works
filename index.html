@@ -1,9 +1,284 @@
-html<!DOCTYPE html>
-<html>
-<head>
-    <title>Insight Works - Used Car Price Predictions</title>
-</head>
-<body>
-    <h1>Test</h1>
-</body>
-</html>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Used Car Price Predictions</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.6;
+        color: #1f2937;
+        background-color: #f5f7fa;
+    }
+
+    header {
+        background: linear-gradient(135deg, #1f4e79, #2563eb);
+        color: white;
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    header p {
+        font-size: 18px;
+        opacity: 0.95;
+    }
+
+    nav {
+        background: #172554;
+        padding: 14px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        color: #93c5fd;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    section {
+        background: white;
+        padding: 30px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+        color: #1f4e79;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #dbeafe;
+        padding-bottom: 8px;
+    }
+
+    h3 {
+        color: #2563eb;
+        margin-top: 15px;
+        margin-bottom: 8px;
+    }
+
+    ul {
+        margin-left: 25px;
+    }
+
+    li {
+        margin-bottom: 8px;
+    }
+
+    a {
+        color: #2563eb;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .info-card {
+        background: #eff6ff;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #2563eb;
+    }
+
+    .info-card strong {
+        display: block;
+        color: #1e3a8a;
+        margin-bottom: 5px;
+    }
+
+    .button {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-top: 10px;
+    }
+
+    .button:hover {
+        background: #1d4ed8;
+    }
+
+    footer {
+        background: #172554;
+        color: white;
+        text-align: center;
+        padding: 25px;
+        margin-top: 40px;
+    }
+
+    @media (max-width: 600px) {
+        header h1 {
+            font-size: 30px;
+        }
+
+        nav a {
+            display: block;
+            margin: 8px;
+        }
+    }
+</style>
+
+</head> <body> <header> <h1>Used Car Price Predictions</h1></header> <nav> <a href="index.html">Home</a> <a href="milestones.html">Milestones</a> <a href="project-files.html">Project Files</a> <a href="technical-docs.html">Technical Documents</a> <a href="presentations.html">Presentations</a> </nav> <main class="container">
+<section>
+    <h2>Project Overview</h2>
+
+    <p>
+        The <strong>Used Car Price Predictions</strong> project aims to help key stakeholders when buying or selling used cars. 
+        This includes but is not limited to used car buyers, private sellers, dealerships, and online car marketplaces. Using descriptive 
+        analytics and predictive modeling, we intend to describe the most important factors in price change and predict the price of used cars based on those factors.
+    </p>
+
+    <p style="margin-top: 15px;">
+        The project involves collecting and preparing a used-car dataset,
+        performing exploratory data analysis, engineering relevant
+        features, using analytics modeling, and
+        developing a dashboard that demonstrates how predictive analytics
+        can assist users in estimating used vehicle prices.
+    </p>
+</section>
+
+<section>
+    <h2>Project Information</h2>
+
+    <div class="info-grid">
+
+        <div class="info-card">
+            <strong>Project Title</strong>
+            Used Car Price Predictions
+        </div>
+
+        <div class="info-card">
+            <strong>Team</strong>
+            Austin Gammill<br>
+            Bryson Rabon<br>
+            Bryce Armand<br>
+            Gustavo Gonzalez<br>
+            Samantha Varela
+        </div>
+
+        <div class="info-card">
+            <strong>Affiliation</strong>
+            Kennesaw State University
+        </div>
+
+        <div class="info-card">
+            <strong>Department</strong>
+            Department of Information Technology
+        </div>
+
+        <div class="info-card">
+            <strong>Semester</strong>
+            Fall 2026
+        </div>
+
+        <div class="info-card">
+            <strong>Course</strong>
+            IT 4793 Applied Data-Driven Solutions
+        </div>
+
+    </div>
+</section>
+
+<section>
+    <h2>Team</h2>
+
+    <p>
+        Our team consists of five students working collaboratively on
+        data analysis, machine learning, software development,
+        documentation, testing, and project presentation.
+    </p>
+
+    <ul style="margin-top: 15px;">
+        <li><strong>Austin Gammill</strong> — Team leader / Descriptive Analytics</li>
+        <li><strong>Bryson Rabon</strong> — Quality Assurance / Document Creation and Management</li>
+        <li><strong>Bryce Armand</strong> — Predictive Modeling</li>
+        <li><strong>Gustavo Gonzalez</strong> — Dashboard Creation / Data Insertion </li>
+        <li><strong>Samantha Varela</strong> — Data Collection / Data Cleaning</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Project Resources</h2>
+
+    <p>
+        Use the links below to access project planning materials,
+        milestone reports, technical documentation, and presentation
+        materials.
+    </p>
+
+    <p>
+        <a class="button" href="milestones.html">
+            Milestone Reports
+        </a>
+
+        <a class="button" href="project-files.html">
+            Project Files
+        </a>
+
+        <a class="button" href="technical-docs.html">
+            Technical Documents
+        </a>
+
+        <a class="button" href="presentations.html">
+            Presentations
+        </a>
+    </p>
+</section>
+
+<section>
+    <h2>Academic Links</h2>
+
+    <ul>
+
+        <li>
+            <a href="https://campus.kennesaw.edu/colleges-departments/ccse/academics/information-technology/index.php" target="_blank">
+                Department of Information technology
+            </a>
+        </li>
+
+        <li>
+            <a href="https://campus.kennesaw.edu" target="_blank">
+                Example University
+            </a>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>Project Goals</h2>
+
+    <ul>
+        <li>Analyze historical used-car pricing data.</li>
+        <li>Identify factors that significantly influence vehicle prices.</li>
+        <li>Evaluate performance using appropriate metrics.</li>
+        <li>Build a simple dashboard for price prediction.</li>
+        <li>Document the complete development process.</li>
+    </ul>
+</section>
+
+</main> <footer> <p>&copy; 2026 Used Car Price Predictions Project</p> <p>Department of Information Technology — Kennesaw State University</p> </footer> </body> </html>
