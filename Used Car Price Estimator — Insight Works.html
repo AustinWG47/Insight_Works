@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insight Works — Used Car Price Estimator</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --text:#1a1d23; --muted:#6b7280;
+  --accent:#2563eb; --accent2:#0891b2; --border:#e5e7eb; --good:#059669; --bad:#dc2626;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --card:#171b21; --text:#e8eaed; --muted:#9aa1ac;
+    --accent:#5b8def; --accent2:#22b8cf; --border:#2a2f37;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --card:#171b21; --text:#e8eaed; --muted:#9aa1ac;
+  --accent:#5b8def; --accent2:#22b8cf; --border:#2a2f37;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+header{padding:20px 20px 8px;max-width:1100px;margin:0 auto;}
+header h1{font-size:1.4rem;margin:0 0 4px;}
+header p{color:var(--muted);margin:0;font-size:.92rem;}
+.wrap{max-width:1100px;margin:0 auto;padding:12px 16px 40px;display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:860px){.wrap{grid-template-columns:1fr 1fr;align-items:start;}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.card h2{font-size:1.02rem;margin:0 0 14px;}
+label{display:block;font-size:.82rem;color:var(--muted);margin:10px 0 4px;}
+select,input[type=number]{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.92rem;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.checkbox{display:flex;align-items:center;gap:8px;margin-top:14px;}
+.checkbox input{width:16px;height:16px;}
+button{margin-top:18px;width:100%;padding:11px;border:none;border-radius:9px;background:var(--accent);color:#fff;font-size:.95rem;font-weight:600;cursor:pointer;}
+button:hover{opacity:.92;}
+.result{display:none;margin-top:16px;padding:16px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.result .price{font-size:1.9rem;font-weight:700;}
+.result .range{opacity:.9;font-size:.85rem;margin-top:2px;}
+.bars{margin-top:14px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.8rem;color:var(--muted);}
+.bar-track{flex:1;background:var(--border);border-radius:6px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.metric{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+.metric .v{font-size:1.15rem;font-weight:700;}
+.metric .l{font-size:.75rem;color:var(--muted);}
+.step{font-size:.82rem;color:var(--muted);margin:4px 0;padding-left:16px;position:relative;}
+.step::before{content:"✓";position:absolute;left:0;color:var(--good);}
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px;}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--border);}
+th{color:var(--muted);font-weight:600;}
+.note{font-size:.75rem;color:var(--muted);margin-top:10px;line-height:1.4;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚗 Insight Works — Used Car Price Estimator</h1>
+  <p>Enter a vehicle's details to get a data-driven price estimate, trained via linear regression and a decision tree.</p>
+</header>
+<div class="wrap">
+
+  <div class="card">
+    <h2>Vehicle details</h2>
+    <div class="row2">
+      <div>
+        <label>Make</label>
+        <select id="make">
+          <option>Toyota</option><option>Honda</option><option>Ford</option>
+          <option>Chevrolet</option><option>BMW</option><option>Tesla</option>
+        </select>
+      </div>
+      <div>
+        <label>Model (label only)</label>
+        <input type="text" id="model" placeholder="e.g. Camry">
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Year</label>
+        <input type="number" id="year" value="2020" min="2005" max="2026">
+      </div>
+      <div>
+        <label>Mileage</label>
+        <input type="number" id="mileage" value="45000" min="0" max="250000">
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Trim</label>
+        <select id="trim">
+          <option value="1.0">Base</option>
+          <option value="1.1">Sport</option>
+          <option value="1.2">Limited</option>
+          <option value="1.3">Premium</option>
+        </select>
+      </div>
+      <div>
+        <label>Fuel type</label>
+        <select id="fuel">
+          <option value="0">Gasoline</option>
+          <option value="800">Diesel</option>
+          <option value="1500">Hybrid</option>
+          <option value="3000">Electric</option>
+        </select>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Transmission</label>
+        <select id="trans">
+          <option value="500">Automatic</option>
+          <option value="0">Manual</option>
+        </select>
+      </div>
+      <div class="checkbox" style="margin-top:26px;">
+        <input type="checkbox" id="accident">
+        <label style="margin:0;">Has accident history</label>
+      </div>
+    </div>
+    <button onclick="predict()">Get price estimate</button>
+
+    <div class="result" id="result">
+      <div class="l" style="font-size:.8rem;opacity:.85;">Estimated market value</div>
+      <div class="price" id="priceOut">—</div>
+      <div class="range" id="rangeOut"></div>
+      <div class="bars">
+        <div class="bar-row"><span style="width:70px;">Linear</span><div class="bar-track"><div class="bar-fill" id="barLin" style="background:#fff;"></div></div></div>
+        <div class="bar-row"><span style="width:70px;">Dec. Tree</span><div class="bar-track"><div class="bar-fill" id="barTree" style="background:#fff;"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Model pipeline &amp; performance</h2>
+    <div class="step">Data ingestion — 500 synthetic listings generated from realistic pricing rules</div>
+    <div class="step">Preprocessing — categorical fields (make, trim, fuel) encoded to numeric price-relevant features</div>
+    <div class="step">EDA — average price computed per make (below)</div>
+    <div class="step">Training — 80/20 split; linear regression (normal equations) &amp; regression tree (depth 4)</div>
+    <div class="step">Evaluation — MAE &amp; MAPE computed on the held-out test split</div>
+
+    <div class="metrics" id="metricsBox"></div>
+
+    <table id="edaTable"><thead><tr><th>Make</th><th>Avg. price</th><th>Avg. mileage</th></tr></thead><tbody></tbody></table>
+
+    <p class="note">This demo trains entirely in your browser on a synthetic dataset that encodes typical depreciation, mileage, trim, fuel, and accident-history effects — it approximates real market behavior but isn't fit on Insight Works' actual 100k+ record dataset. Swap in real training data to replace the generator below for production use.</p>
+  </div>
+
+</div>
+
+<script>
+// 1. DATA INGESTION: synthetic dataset generator
+const MAKE_BASE = {Toyota:28000, Honda:27000, Ford:30000, Chevrolet:29000, BMW:45000, Tesla:48000};
+const TRIMS = [1.0,1.1,1.2,1.3];
+const FUELS = [0,800,1500,3000];
+const CUR_YEAR = 2026;
+
+function rnd(a,b){return a+Math.random()*(b-a);}
+function gaussNoise(sd){let u=1-Math.random(),v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)*sd;}
+
+function genRow(){
+  const makes = Object.keys(MAKE_BASE);
+  const make = makes[Math.floor(Math.random()*makes.length)];
+  const base = MAKE_BASE[make];
+  const year = Math.floor(rnd(2008,2026));
+  const age = CUR_YEAR - year;
+  const mileage = Math.max(0, Math.floor(rnd(0,160000) - age*2000 + gaussNoise(8000)));
+  const trim = TRIMS[Math.floor(Math.random()*TRIMS.length)];
+  const fuel = FUELS[Math.floor(Math.random()*FUELS.length)];
+  const trans = Math.random()<0.85 ? 500 : 0;
+  const accident = Math.random()<0.18 ? 1 : 0;
+
+  // nonlinear age depreciation: steeper in early years
+  const ageDep = 1800*age + 60*age*age;
+  const mileDep = mileage*0.045;
+  let price = base*trim + fuel + trans - ageDep - mileDep - (accident?3000:0) + gaussNoise(1200);
+  price = Math.max(2000, price);
+  return {make, year, mileage, trim, fuel, trans, accident, base, price};
+}
+
+const DATA = Array.from({length:500}, genRow);
+
+// 2. PREPROCESSING: feature vectors
+// features: [1, age, mileage, makeBase, trim, fuel, trans, accident]
+function toFeatures(r){
+  return [1, CUR_YEAR-r.year, r.mileage, r.base, r.trim, r.fuel, r.trans, r.accident];
+}
+const X = DATA.map(toFeatures);
+const Y = DATA.map(r=>r.price);
+
+// shuffle + split 80/20
+const idx = [...Array(DATA.length).keys()];
+for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+const splitAt = Math.floor(idx.length*0.8);
+const trainIdx = idx.slice(0,splitAt), testIdx = idx.slice(splitAt);
+const Xtr = trainIdx.map(i=>X[i]), Ytr = trainIdx.map(i=>Y[i]);
+const Xte = testIdx.map(i=>X[i]), Yte = testIdx.map(i=>Y[i]);
+
+// 3a. LINEAR REGRESSION via normal equations
+function transpose(A){return A[0].map((_,c)=>A.map(r=>r[c]));}
+function matMul(A,B){
+  const r=A.length,c=B[0].length,inner=B.length;
+  const out=Array.from({length:r},()=>Array(c).fill(0));
+  for(let i=0;i<r;i++)for(let k=0;k<inner;k++){const a=A[i][k]; if(a===0)continue; for(let j=0;j<c;j++) out[i][j]+=a*B[k][j];}
+  return out;
+}
+function matVec(A,v){return A.map(row=>row.reduce((s,a,i)=>s+a*v[i],0));}
+function invert(M){
+  const n=M.length;
+  const A=M.map((row,i)=>[...row, ...Array.from({length:n},(_,j)=>i===j?1:0)]);
+  for(let i=0;i<n;i++){
+    let piv=i; for(let r=i+1;r<n;r++) if(Math.abs(A[r][i])>Math.abs(A[piv][i])) piv=r;
+    [A[i],A[piv]]=[A[piv],A[i]];
+    let d=A[i][i]||1e-9;
+    for(let j=0;j<2*n;j++) A[i][j]/=d;
+    for(let r=0;r<n;r++){ if(r===i) continue; const f=A[r][i]; for(let j=0;j<2*n;j++) A[r][j]-=f*A[i][j]; }
+  }
+  return A.map(row=>row.slice(n));
+}
+function trainLinear(Xs,Ys){
+  const Xt = transpose(Xs);
+  let XtX = matMul(Xt, Xs);
+  for(let i=0;i<XtX.length;i++) XtX[i][i]+=1e-3; // ridge for stability
+  const XtY = matVec(Xt, Ys);
+  const inv = invert(XtX);
+  return matVec(inv, XtY); // weight vector
+}
+function predictLinear(w,x){return x.reduce((s,xi,i)=>s+xi*w[i],0);}
+const linW = trainLinear(Xtr,Ytr);
+
+// 3b. REGRESSION TREE (simple CART, depth 4) 
+function variance(vals){ if(!vals.length) return 0; const m=vals.reduce((a,b)=>a+b,0)/vals.length; return vals.reduce((s,v)=>s+(v-m)**2,0)/vals.length; }
+function meanOf(vals){ return vals.reduce((a,b)=>a+b,0)/vals.length; }
+function buildTree(rowsX, rowsY, depth){
+  const mean = meanOf(rowsY);
+  if(depth>=4 || rowsY.length<10) return {leaf:true, value:mean};
+  let best=null;
+  const featIdxs=[1,2,3,4,5,6,7]; // skip bias term
+  for(const f of featIdxs){
+    const vals=[...new Set(rowsX.map(r=>r[f]))].sort((a,b)=>a-b);
+    for(let k=0;k<vals.length-1;k++){
+      const thresh=(vals[k]+vals[k+1])/2;
+      const leftY=[],rightY=[];
+      for(let i=0;i<rowsX.length;i++){ (rowsX[i][f]<=thresh? leftY:rightY).push(rowsY[i]); }
+      if(leftY.length<5||rightY.length<5) continue;
+      const score = leftY.length*variance(leftY) + rightY.length*variance(rightY);
+      if(!best || score<best.score) best={score,f,thresh};
+    }
+  }
+  if(!best) return {leaf:true, value:mean};
+  const leftX=[],leftY=[],rightX=[],rightY=[];
+  for(let i=0;i<rowsX.length;i++){
+    if(rowsX[i][best.f]<=best.thresh){leftX.push(rowsX[i]);leftY.push(rowsY[i]);}
+    else{rightX.push(rowsX[i]);rightY.push(rowsY[i]);}
+  }
+  return {leaf:false, f:best.f, thresh:best.thresh,
+    left:buildTree(leftX,leftY,depth+1), right:buildTree(rightX,rightY,depth+1)};
+}
+function predictTree(node,x){
+  while(!node.leaf){ node = x[node.f]<=node.thresh ? node.left : node.right; }
+  return node.value;
+}
+const tree = buildTree(Xtr,Ytr,0);
+
+// 4. EVALUATION: MAE & MAPE on held-out test set
+function evaluate(predictFn){
+  let ae=0, ape=0;
+  for(let i=0;i<Xte.length;i++){
+    const p = predictFn(Xte[i]);
+    const actual = Yte[i];
+    ae += Math.abs(p-actual);
+    ape += Math.abs(p-actual)/actual;
+  }
+  return {mae: ae/Xte.length, mape: (ape/Xte.length)*100};
+}
+const linEval = evaluate(x=>predictLinear(linW,x));
+const treeEval = evaluate(x=>predictTree(tree,x));
+
+document.getElementById('metricsBox').innerHTML = `
+  <div class="metric"><div class="v">$${linEval.mae.toFixed(0)}</div><div class="l">Linear MAE</div></div>
+  <div class="metric"><div class="v">${linEval.mape.toFixed(1)}%</div><div class="l">Linear MAPE</div></div>
+  <div class="metric"><div class="v">$${treeEval.mae.toFixed(0)}</div><div class="l">Tree MAE</div></div>
+  <div class="metric"><div class="v">${treeEval.mape.toFixed(1)}%</div><div class="l">Tree MAPE</div></div>
+`;
+
+//EDA table
+const byMake = {};
+DATA.forEach(r=>{ (byMake[r.make] ||= []).push(r); });
+const tbody = document.querySelector('#edaTable tbody');
+Object.entries(byMake).forEach(([make,rows])=>{
+  const avgP = meanOf(rows.map(r=>r.price));
+  const avgM = meanOf(rows.map(r=>r.mileage));
+  tbody.innerHTML += `<tr><td>${make}</td><td>$${avgP.toFixed(0)}</td><td>${avgM.toFixed(0)} mi</td></tr>`;
+});
+
+//5. LIVE PREDICTION FROM FOR
+function predict(){
+  const make = document.getElementById('make').value;
+  const year = parseInt(document.getElementById('year').value);
+  const mileage = parseFloat(document.getElementById('mileage').value);
+  const trim = parseFloat(document.getElementById('trim').value);
+  const fuel = parseFloat(document.getElementById('fuel').value);
+  const trans = parseFloat(document.getElementById('trans').value);
+  const accident = document.getElementById('accident').checked ? 1 : 0;
+  const base = MAKE_BASE[make];
+
+  const x = [1, CUR_YEAR-year, mileage, base, trim, fuel, trans, accident];
+  const pLin = Math.max(1000, predictLinear(linW, x));
+  const pTree = Math.max(1000, predictTree(tree, x));
+  const blended = (pLin+pTree)/2;
+  const lo = Math.min(pLin,pTree) - linEval.mae*0.5;
+  const hi = Math.max(pLin,pTree) + linEval.mae*0.5;
+
+  document.getElementById('priceOut').textContent = '$' + blended.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  document.getElementById('rangeOut').textContent = `Likely range: $${Math.max(1000,lo).toFixed(0)} – $${hi.toFixed(0)}`;
+  const maxBar = Math.max(pLin,pTree,1);
+  document.getElementById('barLin').style.width = (pLin/maxBar*100)+'%';
+  document.getElementById('barTree').style.width = (pTree/maxBar*100)+'%';
+  document.getElementById('result').style.display = 'block';
+}
+</script>
+</body>
+</html>
