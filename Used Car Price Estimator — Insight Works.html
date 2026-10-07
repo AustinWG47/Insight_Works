@@ -27,12 +27,14 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 header{padding:20px 20px 8px;max-width:1100px;margin:0 auto;}
 header h1{font-size:1.4rem;margin:0 0 4px;}
 header p{color:var(--muted);margin:0;font-size:.92rem;}
+.back{display:inline-block;margin-bottom:10px;font-size:.85rem;color:var(--accent);text-decoration:none;font-weight:600;}
+.back:hover{text-decoration:underline;}
 .wrap{max-width:1100px;margin:0 auto;padding:12px 16px 40px;display:grid;grid-template-columns:1fr;gap:16px;}
 @media(min-width:860px){.wrap{grid-template-columns:1fr 1fr;align-items:start;}}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
 .card h2{font-size:1.02rem;margin:0 0 14px;}
 label{display:block;font-size:.82rem;color:var(--muted);margin:10px 0 4px;}
-select,input[type=number]{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.92rem;}
+select,input[type=number],input[type=text]{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.92rem;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .checkbox{display:flex;align-items:center;gap:8px;margin-top:14px;}
 .checkbox input{width:16px;height:16px;}
@@ -59,6 +61,7 @@ th{color:var(--muted);font-weight:600;}
 </head>
 <body>
 <header>
+  <a class="back" href="index.html">&larr; Back to Home</a>
   <h1>🚗 Insight Works — Used Car Price Estimator</h1>
   <p>Enter a vehicle's details to get a data-driven price estimate, trained via linear regression and a decision tree.</p>
 </header>
@@ -297,7 +300,7 @@ Object.entries(byMake).forEach(([make,rows])=>{
   tbody.innerHTML += `<tr><td>${make}</td><td>$${avgP.toFixed(0)}</td><td>${avgM.toFixed(0)} mi</td></tr>`;
 });
 
-//5. LIVE PREDICTION FROM FOR
+//5. LIVE PREDICTION FROM FORM
 function predict(){
   const make = document.getElementById('make').value;
   const year = parseInt(document.getElementById('year').value);
