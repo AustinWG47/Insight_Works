@@ -554,6 +554,7 @@ function trainModels() {
 
 // Load CSV file.
 $("csvFile").addEventListener("change", async event => {
+    alert("CSV upload event fired!");
   const file = event.target.files[0];
   if (!file) return;
 
