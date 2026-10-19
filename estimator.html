@@ -554,9 +554,10 @@ function trainModels() {
 
 // Load CSV file.
 $("csvFile").addEventListener("change", async event => {
-    alert("CSV upload event fired!");
   const file = event.target.files[0];
   if (!file) return;
+
+  const status = $("csvStatus");
 
   DATA = [];
   makeNames = [];
@@ -564,32 +565,46 @@ $("csvFile").addEventListener("change", async event => {
   linW = [];
   tree = null;
 
+  $("predictButton").disabled = true;
+  $("result").style.display = "none";
+  $("metricsBox").innerHTML = "";
+  $("edaTable").querySelector("tbody").innerHTML = "";
+
   $("make").innerHTML =
-    '<option value="">Upload a valid CSV first</option>';
+    '<option value="">Upload CSV first</option>';
   $("make").disabled = true;
 
   $("model").innerHTML =
     '<option value="">Select a make first</option>';
   $("model").disabled = true;
 
-  $("metricsBox").innerHTML = "";
-  $("edaTable").querySelector("tbody").innerHTML = "";
-
   status.className = "note";
-  status.textContent = "CSV error: " + error.message;
-  $("predictButton").disabled = true;
+  status.textContent = "Reading CSV file...";
 
   try {
-    const parsed = parseCSV(await file.text());
+    const csvText = await file.text();
+
+    status.textContent = "Parsing CSV...";
+
+    const parsed = parseCSV(csvText);
+
+    status.textContent =
+      `CSV parsed: ${parsed.records.length} valid records, ` +
+      `${parsed.rejected} rejected.`;
+
+    if (parsed.records.length < 30) {
+      throw new Error(
+        `Only ${parsed.records.length} valid records found. ` +
+        "At least 30 valid records are required."
+      );
+    }
+
     DATA = parsed.records;
 
-    if (!DATA.length) {
-      throw new Error("No valid vehicle records found.");
-    }
+    status.textContent = "Training models...";
 
     trainModels();
 
-    status.className = "note";
     status.textContent =
       `Loaded ${DATA.length} valid records from ${file.name}.` +
       (parsed.rejected
@@ -597,18 +612,33 @@ $("csvFile").addEventListener("change", async event => {
         : "");
 
     $("predictButton").disabled = false;
+
   } catch (error) {
     DATA = [];
+    makeNames = [];
+    modelNames = [];
     linW = [];
     tree = null;
 
+    $("make").innerHTML =
+      '<option value="">Upload CSV first</option>';
+    $("make").disabled = true;
+
+    $("model").innerHTML =
+      '<option value="">Select a make first</option>';
+    $("model").disabled = true;
+
+    $("predictButton").disabled = true;
+
     status.className = "note";
     status.textContent = "CSV error: " + error.message;
+
+    console.error("CSV upload or training failed:", error);
   }
 });
 
+// Keep this listener OUTSIDE the upload event.
 $("make").addEventListener("change", populateModels);
-
 // Predict the price for the entered vehicle.
 function predict() {
   if (!DATA.length || !tree || !linW.length) {
