@@ -441,11 +441,23 @@ function money(value) {
 
 // Populate make/model dropdowns from the uploaded CSV.
 function populateMakes() {
-  $("make").innerHTML = makeNames.map(v =>
+  const makeSelect = $("make");
+
+  makeSelect.innerHTML = "";
+
+  if (makeNames.length === 0) {
+    makeSelect.innerHTML =
+      '<option value="">No makes found</option>';
+    makeSelect.disabled = true;
+    $("model").disabled = true;
+    return;
+  }
+
+  makeSelect.innerHTML = makeNames.map(v =>
     `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`
   ).join("");
 
-  $("make").disabled = false;
+  makeSelect.disabled = false;
   populateModels();
 }
 
@@ -453,14 +465,26 @@ function populateModels() {
   const make = $("make").value;
 
   const models = [...new Set(
-    DATA.filter(r => r.make === make).map(r => r.model)
+    DATA
+      .filter(r => r.make === make)
+      .map(r => r.model)
   )].sort();
 
-  $("model").innerHTML = models.map(v =>
+  const modelSelect = $("model");
+  modelSelect.innerHTML = "";
+
+  if (models.length === 0) {
+    modelSelect.innerHTML =
+      '<option value="">No models found</option>';
+    modelSelect.disabled = true;
+    return;
+  }
+
+  modelSelect.innerHTML = models.map(v =>
     `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`
   ).join("");
 
-  $("model").disabled = models.length === 0;
+  modelSelect.disabled = false;
 }
 
 // Display model performance.
