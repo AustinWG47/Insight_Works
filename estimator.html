@@ -238,8 +238,8 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h, i) => obj[h] = values[i] ?? "");
 
-    const make = String(obj.make).trim();
-    const model = String(obj.model).trim();
+    const make = String(obj.make).trim.toUpperCase();
+    const model = String(obj.model).trim.toUpperCase();
     const year = Number(obj.year);
     const mileage = Number(String(obj.mileage).replace(/,/g, ""));
     const price = Number(String(obj.price).replace(/[$,]/g, ""));
@@ -462,40 +462,43 @@ function populateMakes() {
 }
 
 function populateModels() {
-  const make = $("make").value;
+  const makeSelect = $("make");
   const modelSelect = $("model");
 
-  // Clear existing models
-  modelSelect.innerHTML = "";
+  const selectedMake = makeSelect.value.trim().toUpperCase();
 
-  if (!make) {
-    modelSelect.innerHTML =
-      '<option value="">Select a make first</option>';
+  // Always reset the model dropdown
+  modelSelect.replaceChildren();
+
+  if (!selectedMake) {
+    modelSelect.add(new Option("Select a make first", ""));
     modelSelect.disabled = true;
     return;
   }
 
-  // Get only models belonging to the selected make
+  // Match the selected make against the uploaded dataset
+  const matchingRecords = DATA.filter(record =>
+    record.make.trim().toUpperCase() === selectedMake
+  );
+
+  // Extract only models associated with that make
   const models = [...new Set(
-    DATA
-      .filter(r => r.make === make)
-      .map(r => r.model)
+    matchingRecords.map(record => record.model.trim())
   )].sort();
 
   if (models.length === 0) {
-    modelSelect.innerHTML =
-      '<option value="">No models found</option>';
+    modelSelect.add(new Option("No models found", ""));
     modelSelect.disabled = true;
     return;
   }
 
-  // Populate dropdown
-  modelSelect.innerHTML = models.map(v =>
-    `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`
-  ).join("");
+  modelSelect.add(new Option("Select a model", ""));
+
+  models.forEach(model => {
+    modelSelect.add(new Option(model, model));
+  });
 
   modelSelect.disabled = false;
-}
   
 // Display model performance.
 function renderMetrics() {
